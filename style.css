@@ -1,0 +1,67 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@600&display=swap");
+
+* {
+  font-family: sans-serif;
+  -webkit-font-smoothing: antialiased;
+  color: #000000;
+  background-color: var(--background-color);
+}
+
+#grid-container {
+  max-width: 810px;
+  display: grid;
+  grid-template-columns: repeat(27, minmax(30px, 1fr));
+  grid-template-rows: repeat(8, 30px);
+  row-gap: 1em;
+  margin: 5em auto;
+}
+
+.h-index {
+  grid-column: 4 / span 24;
+  max-height: 30px;
+}
+
+.v-index {
+  grid-column: 1/ 4;
+  max-height: 30px;
+  background-color: var(--background-color);
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 14px;
+  font-family: "Inter", sans-serif;
+}
+
+.grid-canvas {
+  display: grid;
+  grid-template-columns: repeat(27, minmax(30px, 1fr));
+  grid-column: 1/ 28;
+  max-height: 30px;
+}
+
+.task {
+  fill: var(--primary-fill-color);
+  stroke: var(--primary-stroke-color);
+  stroke-width: 2;
+}
+
+.day {
+  grid-column: 4/28;
+}
+
+:root {
+  --primary-fill-color: #eeeeee;
+  --primary-stroke-color: #000000;
+  --background-color: #ffffff;
+}
+
+.sleep {
+  fill: #adc3cd;
+}
+
+.design {
+  fill: #b4ca7d;
+}
+
+.coding {
+  fill: #f5e1c3;
+}
