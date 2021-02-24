@@ -37,8 +37,59 @@ class Event {
 class Interface {
   constructor(log = []) {
     this.log = log;
-    this.currentTask;
+    this.currentTask = 0;
+    this.input = document.getElementById("input");
+    this.inputListener();
+    this.submitListener();
   }
+
+  inputFormatter(inputString) {
+    let cmd = inputString.toLowerCase();
+    if (cmd.startsWith("start")) {
+      if (this.currentTask == 0) {
+        let inputList = inputString.split(",");
+        let taskName = inputList[0].slice(6);
+        let sectorName = inputList[1];
+        this.newEvent(taskName, sectorName);
+      } else {
+        console.log("A task is still going on");
+      }
+    }
+    if (cmd == "pause") {
+      this.pause();
+    }
+    if (cmd == "resume") {
+      this.resume();
+    }
+    if (cmd == "stop" || cmd == "end" || cmd == "quit") {
+      this.stop();
+    }
+  }
+
+  submitListener() {
+    this.input.addEventListener("keyup", (event) => {
+      if (event.key === "Enter") {
+        this.inputFormatter(event.target.value);
+      }
+    });
+  }
+
+  inputListener() {
+    document.addEventListener("keydown", (event) => {
+      if (event.defaultPrevented) {
+        return;
+      }
+      let key = event.key;
+
+      if (
+        (event.getModifierState("Control") || event.getModifierState("Meta")) &&
+        key === "/"
+      ) {
+        this.input.focus();
+      }
+    });
+  }
+
   newEvent(taskName, sector) {
     this.currentTask = new Event(taskName, sector, this.log);
   }
@@ -50,6 +101,7 @@ class Interface {
   }
   stop() {
     this.currentTask.stop();
+    this.currentTask = 0;
   }
   stringify() {
     this.json_log = JSON.stringify(this.log);
@@ -70,7 +122,7 @@ class WeekVis {
     this.visLog = [];
     this.widthPerHour = 30;
     this.height = 36;
-    this.dayNum = 6;
+    this.dayNum = 7;
     this.allowedTasks = [];
     this.visualise();
   }
@@ -118,7 +170,7 @@ class WeekVis {
     var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.setAttribute("id", `${currentDate}`);
     svg.setAttribute("class", `${className}`);
-    svg.setAttribute("viewBox", "-2 1 724 23");
+    svg.setAttribute("viewBox", "-2 1 724 22");
     svg.setAttributeNS(
       "http://www.w3.org/2000/xmlns/",
       "xmlns:xlink",

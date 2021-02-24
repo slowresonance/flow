@@ -1,10 +1,10 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@350;600&display=swap");
 
 * {
   font-family: sans-serif;
   -webkit-font-smoothing: antialiased;
-  color: #000000;
-  background-color: var(--background-color);
+  color: var(--primary-text);
+  background-color: var(--background);
 }
 
 #grid-container {
@@ -24,7 +24,7 @@
 .v-index {
   grid-column: 1/ 4;
   max-height: 30px;
-  background-color: var(--background-color);
+  background-color: var(--background);
   text-transform: uppercase;
   font-weight: 600;
   font-size: 14px;
@@ -39,19 +39,13 @@
 }
 
 .task {
-  fill: var(--primary-fill-color);
-  stroke: var(--primary-stroke-color);
+  fill: var(--primary-fill) !important;
+  stroke: var(--primary-stroke) !important;
   stroke-width: 2;
 }
 
 .day {
   grid-column: 4/28;
-}
-
-:root {
-  --primary-fill-color: #eeeeee;
-  --primary-stroke-color: #000000;
-  --background-color: #ffffff;
 }
 
 .sleep {
@@ -64,4 +58,35 @@
 
 .coding {
   fill: #f5e1c3;
+}
+
+#input {
+  background-color: #f7f7f7;
+  display: block;
+  margin: 5em auto;
+  font-family: "Inter", sans-serif;
+  font-weight: 350;
+  color: var(--primary-text);
+  font-size: 16px;
+  outline: none;
+  padding: 0.4em;
+  padding-left: 0.7em;
+  width: 45ch;
+  border-width: 1px;
+  border: 1px #1c1c1a solid;
+  height: 1.5em;
+}
+
+#input:focus {
+  background-color: var(--primary-text);
+  color: var(--primary-text-invert);
+}
+
+:root {
+  --primary-fill: #d32825;
+  --primary-stroke: #d32825;
+  --primary-text: #1c1c1a;
+  --primary-text-invert: #f7f7f7;
+  --input-background: #f7f7f7;
+  --background: #ffffff;
 }
