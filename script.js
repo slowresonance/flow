@@ -1,10 +1,10 @@
 class Event {
-  constructor(taskName, sector, log = []) {
+  constructor(taskName, sector, log = [], Interface) {
     this.start = new Date();
     this.taskName = taskName;
     this.sector = sector;
     this.state = 1;
-    this.log = log;
+    this.log = Interface.log || log;
   }
   pause() {
     if (this.state == 0) return;
@@ -35,12 +35,20 @@ class Event {
 }
 
 class Interface {
-  constructor(log = []) {
-    this.log = log;
+  constructor() {
+    //Use a revivor function here
+    this.log =
+      JSON.parse(localStorage.getItem("log"), function (key, value) {
+        if (key == "start" || key == "end") {
+          return new Date(value);
+        }
+        return value;
+      }) || [];
     this.currentTask = 0;
     this.input = document.getElementById("input");
     this.inputListener();
     this.submitListener();
+    this._commit();
   }
 
   inputFormatter(inputString) {
@@ -70,6 +78,7 @@ class Interface {
     this.input.addEventListener("keyup", (event) => {
       if (event.key === "Enter") {
         this.inputFormatter(event.target.value);
+        event.target.value = "";
       }
     });
   }
@@ -91,7 +100,7 @@ class Interface {
   }
 
   newEvent(taskName, sector) {
-    this.currentTask = new Event(taskName, sector, this.log);
+    this.currentTask = new Event(taskName, sector, this.log, this);
   }
   pause() {
     this.currentTask.pause();
@@ -103,28 +112,36 @@ class Interface {
     this.currentTask.stop();
     this.currentTask = 0;
   }
-  stringify() {
-    this.json_log = JSON.stringify(this.log);
+  _commit() {
+    localStorage.setItem("log", JSON.stringify(this.log));
   }
-  unstringify() {
-    this.unstr_log = JSON.parse(this.json_log, function (key, value) {
-      if (key == "start" || key == "end") {
-        return new Date(value);
-      }
-      return value;
-    });
-  }
+  // unstringify() {
+  //   JSON.parse(localStorage.getItem("log"), function (key, value) {
+  //     if (key == "start" || key == "end") {
+  //       return new Date(value);
+  //     }
+  //     return value;
+  //   });
+  // }
 }
 
 class WeekVis {
-  constructor(log) {
-    this.log = log;
+  constructor() {
+    this.log =
+      JSON.parse(localStorage.getItem("log"), function (key, value) {
+        if (key == "start" || key == "end") {
+          return new Date(value);
+        }
+        return value;
+      }) || 0;
     this.visLog = [];
     this.widthPerHour = 30;
     this.height = 36;
     this.dayNum = 7;
     this.allowedTasks = [];
-    this.visualise();
+    if (this.log != 0) {
+      this.visualise();
+    }
   }
 
   visualise() {
@@ -315,11 +332,13 @@ log2 = [
   },
 ];
 
+localStorage.setItem("log", JSON.stringify(log2));
+
 inte = new Interface(log2);
 
-inte.stringify();
+inte._commit();
 
-inte.unstringify();
+// inte.unstringify();
 
 function sleep(milliseconds) {
   const date = Date.now();
@@ -330,5 +349,3 @@ function sleep(milliseconds) {
 }
 
 wvis = new WeekVis(inte.unstr_log);
-
-console.log(wvis);
