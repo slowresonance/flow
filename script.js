@@ -5,6 +5,7 @@ class Event {
     this.sector = sector;
     this.state = 1;
     this.log = Interface.log || log;
+    this.Interface = Interface;
   }
   pause() {
     if (this.state == 0) return;
@@ -30,7 +31,7 @@ class Event {
       start: this.start,
       end: this.end,
     };
-    this.log.push(t);
+    this.Interface.updatelog(t);
   }
 }
 
@@ -49,6 +50,14 @@ class Interface {
     this.inputListener();
     this.submitListener();
     this._commit();
+    this.vis = new WeekVis();
+  }
+
+  updatelog(task) {
+    this.log.push(task);
+    console.log(this.log);
+    this._commit();
+    this.vis.visualise();
   }
 
   inputFormatter(inputString) {
@@ -154,6 +163,7 @@ class WeekVis {
 
   displayTasks() {
     let grid = document.getElementById("grid-container");
+    this.deleteTasks();
     let currentDate;
     let currentCanvas;
     let currentVIndex;
@@ -170,6 +180,14 @@ class WeekVis {
         currentSvg = document.getElementById(currentDate);
       }
       currentSvg.innerHTML += this.createRect(task);
+    });
+  }
+
+  deleteTasks() {
+    let canvasList = document.querySelectorAll("div.grid-canvas");
+    console.log(canvasList);
+    canvasList.forEach((canvas) => {
+      canvas.remove();
     });
   }
 
@@ -305,47 +323,37 @@ class WeekVis {
   }
 }
 
-log2 = [
-  {
-    taskName: "test0",
-    sector: "design",
-    start: new Date().setDate(1),
-    end: new Date().setDate(6),
-  },
-  {
-    taskName: "test0",
-    sector: "design",
-    start: new Date().setDate(8),
-    end: new Date().setDate(11),
-  },
-  {
-    taskName: "te",
-    sector: "sleep",
-    start: new Date().setHours(7),
-    end: new Date().setHours(14),
-  },
-  {
-    taskName: "te",
-    sector: "coding",
-    start: new Date().setHours(16),
-    end: new Date().setHours(18),
-  },
-];
+// log2 = [
+//   {
+//     taskName: "test0",
+//     sector: "design",
+//     start: new Date().setDate(1),
+//     end: new Date().setDate(6),
+//   },
+//   {
+//     taskName: "test0",
+//     sector: "design",
+//     start: new Date().setDate(8),
+//     end: new Date().setDate(11),
+//   },
+//   {
+//     taskName: "te",
+//     sector: "sleep",
+//     start: new Date().setHours(7),
+//     end: new Date().setHours(14),
+//   },
+//   {
+//     taskName: "te",
+//     sector: "coding",
+//     start: new Date().setHours(16),
+//     end: new Date().setHours(18),
+//   },
+// ];
 
-localStorage.setItem("log", JSON.stringify(log2));
+// localStorage.setItem("log", JSON.stringify(log2));
 
-inte = new Interface(log2);
+inte = new Interface();
 
-inte._commit();
+// inte._commit();
 
 // inte.unstringify();
-
-function sleep(milliseconds) {
-  const date = Date.now();
-  let currentDate = null;
-  do {
-    currentDate = Date.now();
-  } while (currentDate - date < milliseconds);
-}
-
-wvis = new WeekVis(inte.unstr_log);
